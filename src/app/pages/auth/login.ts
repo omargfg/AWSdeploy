@@ -1,17 +1,18 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, Validators,ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
+import { AuthService } from '../service/authservice.service';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, ReactiveFormsModule],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
@@ -41,11 +42,12 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                         </div>
 
                         <div>
+                        <form autocomplete="off" [formGroup]="myForm">
                             <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" [(ngModel)]="email" />
+                            <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] mb-8" [(ngModel)]="email" />
 
                             <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <p-password formControlName="password" id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
                             <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                                 <div class="flex items-center">
@@ -55,7 +57,9 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                 <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                             </div>
                             <p-button label="Sign In" styleClass="w-full" routerLink="main"></p-button>
+                            </form>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -68,4 +72,37 @@ export class Login {
     password: string = '';
 
     checked: boolean = false;
+//mis cosas from here!!!
+
+
+private fb          = inject( FormBuilder );
+  private authService = inject( AuthService );
+  private router      = inject( Router )
+
+
+  public myForm: FormGroup = this.fb.group({
+    email:    ['omargfg@gmail.com', [ Validators.required, Validators.email ]],
+    password: ['222222', [ Validators.required, Validators.minLength(6) ]],
+  });
+
+
+  login() {
+    const { email, password } = this.myForm.value;
+
+    this.authService.login(email, password)
+      .subscribe({
+        next: () => this.router.navigateByUrl('/dashboard'),
+        error: (message) => {
+          console.log(message);
+
+          //Swal.fire('Error', message, 'error' )
+        }
+      })
+
+  }
+
+
+
+
+
 }
