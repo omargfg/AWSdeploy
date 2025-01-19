@@ -42,21 +42,21 @@ import { AuthService } from '../service/authservice.service';
                         </div>
 
                         <div>
-                        <form autocomplete="off" [formGroup]="myForm">
+                        <form autocomplete="off" [formGroup]="myForm"  (ngSubmit)="login()">
                             <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                            <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] mb-8" [(ngModel)]="email" />
+                            <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] mb-8"  />
 
                             <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password formControlName="password" id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <p-password  id="password1" formControlName="password"  placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
                             <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                                 <div class="flex items-center">
-                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>
+                                    <p-checkbox  id="rememberme1" binary class="mr-2"></p-checkbox>
                                     <label for="rememberme1">Remember me</label>
                                 </div>
                                 <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                             </div>
-                            <p-button label="Sign In" styleClass="w-full" routerLink="main"></p-button>
+                            <p-button label="Sign In" styleClass="w-full" type="submit" [disabled]="myForm.invalid"></p-button>
                             </form>
                         </div>
 
@@ -67,9 +67,7 @@ import { AuthService } from '../service/authservice.service';
     `
 })
 export class Login {
-    email: string = '';
 
-    password: string = '';
 
     checked: boolean = false;
 //mis cosas from here!!!
@@ -87,11 +85,15 @@ private fb          = inject( FormBuilder );
 
 
   login() {
+    console.log(this.myForm.value);
     const { email, password } = this.myForm.value;
 
     this.authService.login(email, password)
       .subscribe({
-        next: () => this.router.navigateByUrl('/dashboard'),
+        next: () => {
+
+            this.router.navigateByUrl('main')
+        },
         error: (message) => {
           console.log(message);
 
