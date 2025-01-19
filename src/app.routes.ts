@@ -12,7 +12,7 @@ export const appRoutes: Routes = [
 
 
     {  path: '',
-
+        canActivate: [ isNotAuthenticatedGuard ],
         component: Login},
 
     {
@@ -31,9 +31,7 @@ export const appRoutes: Routes = [
     },
 
 
-    { path: 'notfound', component: Notfound },
-    { path: 'auth',
-        canActivate: [ isNotAuthenticatedGuard ],
-        loadChildren: () => import('./app/pages/auth/auth.routes') },
+
+
     { path: '**', redirectTo: '/notfound' }
 ];
