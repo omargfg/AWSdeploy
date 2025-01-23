@@ -85,6 +85,9 @@ private setAuthentication(user: User, token:string): boolean {
     this._authStatus.set( AuthStatus.notAuthenticated );
 
   }
+register(){
+    this._authStatus.set( AuthStatus.unRegistered);
 
+}
 
 }

@@ -37,12 +37,13 @@ import { AuthService } from '../service/authservice.service';
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
+                            <!-- <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
+                            <span class="text-muted-color mr-10 font-medium">Sign in to continue...</span>
+                            <span (click)="register()" class="font-medium no-underline ml-10 text-right cursor-pointer text-primary"  >or Register an account ?</span> -->
                         </div>
-
+                        <router-outlet></router-outlet>
                         <div>
-                        <form autocomplete="off" [formGroup]="myForm"  (ngSubmit)="login()">
+                        <!-- <form autocomplete="off" [formGroup]="myForm"  (ngSubmit)="login()">
                             <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
                             <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] mb-8"  />
 
@@ -54,10 +55,12 @@ import { AuthService } from '../service/authservice.service';
                                     <p-checkbox  id="rememberme1" binary class="mr-2"></p-checkbox>
                                     <label for="rememberme1">Remember me</label>
                                 </div>
-                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
+                                <span class="font-medium no-underline ml-14 text-right cursor-pointer text-primary">Forgot password?</span>
+
                             </div>
+
                             <p-button label="Sign In" styleClass="w-full" type="submit" [disabled]="myForm.invalid"></p-button>
-                            </form>
+                            </form> -->
                         </div>
 
                     </div>
@@ -66,45 +69,48 @@ import { AuthService } from '../service/authservice.service';
         </div>
     `
 })
-export class Login {
+export class Portada {
 
 
     checked: boolean = false;
 //mis cosas from here!!!
 
 
-private fb          = inject( FormBuilder );
-  private authService = inject( AuthService );
-  private router      = inject( Router )
+// private fb          = inject( FormBuilder );
+//   private authService = inject( AuthService );
+//   private router      = inject( Router )
 
 
-  public myForm: FormGroup = this.fb.group({
-    email:    ['omargfg@gmail.com', [ Validators.required, Validators.email ]],
-    password: ['222222', [ Validators.required, Validators.minLength(6) ]],
-  });
+//   public myForm: FormGroup = this.fb.group({
+//     email:    ['omargfg@gmail.com', [ Validators.required, Validators.email ]],
+//     password: ['222222', [ Validators.required, Validators.minLength(6) ]],
+//   });
 
 
-  login() {
-    console.log(this.myForm.value);
-    const { email, password } = this.myForm.value;
+//   login() {
+//     console.log(this.myForm.value);
+//     const { email, password } = this.myForm.value;
 
-    this.authService.login(email, password)
-      .subscribe({
-        next: () => {
+//     this.authService.login(email, password)
+//       .subscribe({
+//         next: () => {
 
-            this.router.navigateByUrl('main')
-        },
-        error: (message) => {
-          console.log(message);
+//             this.router.navigateByUrl('main')
+//         },
+//         error: (message) => {
+//           console.log(message);
 
-          //Swal.fire('Error', message, 'error' )
-        }
-      })
+//           //Swal.fire('Error', message, 'error' )
+//         }
+//       })
 
-  }
+//   }
 
 
+// register(){
+// this.authService.register();
 
+// }
 
 
 }

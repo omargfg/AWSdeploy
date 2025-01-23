@@ -1,15 +1,21 @@
-import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { Component, inject, OnInit } from '@angular/core';
+import { MenuItem, MenuItemCommandEvent, PrimeIcons } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { AuthService } from '../../pages/service/authservice.service';
+import { PanelMenuModule } from 'primeng/panelmenu';
+
+
+import { Menu } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
+    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator,PanelMenuModule,Menu,ButtonModule],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
@@ -33,7 +39,7 @@ import { LayoutService } from '../service/layout.service';
                         />
                     </g>
                 </svg>
-                <span>SAKAI</span>
+                <span>Welcome {{username}} ...</span>
             </a>
         </div>
 
@@ -72,21 +78,55 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-user"></i>
-                        <span>Profile</span>
-                    </button>
+                    <div  >
+                       <p-menu #menu [model]="items" [popup]="true" />
+                       <p-button type="button" class="layout-topbar-action" (click)="menu.toggle($event)" ><i class="pi pi-user"></i></p-button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>`
 })
-export class AppTopbar {
-    items!: MenuItem[];
+export class AppTopbar implements OnInit {
+     //ProfileItems!: MenuItem[];
+     items: MenuItem[] | undefined;
 
-    constructor(public layoutService: LayoutService) {}
+    constructor(public layoutService: LayoutService,private authService:AuthService) {}
+
+
+
+    ngOnInit(): void {
+        this.items = [
+            {
+                label: 'Options',
+                items: [
+                    {
+                        label: 'Edit User',
+                        icon: 'pi pi-user-edit'
+                    },
+                    {
+                        label: 'Log Out',
+                        icon: 'pi pi-sign-out',
+                        command: () => this.logOut()
+                    }
+                ]
+            }
+        ];
+    }
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
     }
+
+get username(){
+
+return this.authService.currentUser()!.name;
+
+}
+ public logOut(){
+
+this.authService.logout();
+
+ }
+
 }
