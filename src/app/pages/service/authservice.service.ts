@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../enviroments/env';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../../interfaces/index.interface';
+import { ValidationErrors } from '@angular/forms';
 
 
 
@@ -85,9 +86,41 @@ private setAuthentication(user: User, token:string): boolean {
     this._authStatus.set( AuthStatus.notAuthenticated );
 
   }
-register(){
-    this._authStatus.set( AuthStatus.unRegistered);
 
+
+registerUser(email:string, name:string, password:string):Observable<boolean> {
+
+    const url  = `${ this.baseUrl }/auth/register`;//el baseUrl esta definida el las variables globales
+    const body = { email,name, password };// el body es el objeto q vamos a mandar en la peticion post, en este caso va a tener email y pasword
+
+    return this.http.post<LoginResponse>( url, body )
+      .pipe(
+        map( ({ user, token }) => this.setAuthentication( user, token )),
+        catchError( err => throwError( () => console.log(err.error.message) )
+      ));
 }
+
+
+//metodo q devuelve verdadero o falso si encuentra o no un email en el servidor
+checkByEmail( email: string ): Observable<boolean> {
+
+    const url  = `${ this.baseUrl }/auth/ckeck-email`;//el baseUrl esta definida el las variables globales
+    const body = { email};// el body es el objeto q vamos a mandar en la peticion post, en este caso va a tener email y pasword
+
+   return  this.http.post< boolean>( url, body )
+    .pipe(
+            map( resp => {
+                return ( resp)
+                   ?  true
+                    : false
+              }
+            ),
+
+        catchError( err => throwError( () => console.log(err.error.message) ) )
+
+      );
+  }
+
+
 
 }

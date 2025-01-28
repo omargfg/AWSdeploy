@@ -83,10 +83,10 @@ private fb          = inject( FormBuilder );
   }
 
 
-register(){
-this.authService.register();
+// register(){
+// this.authService.register();
 
-}
+// }
 
 
 }

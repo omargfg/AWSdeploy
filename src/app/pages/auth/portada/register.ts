@@ -1,17 +1,21 @@
+import { MessageModule } from 'primeng/message';
 import { Component, inject } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../service/authservice.service';
 import { RippleModule } from 'primeng/ripple';
 import { CheckboxModule } from 'primeng/checkbox';
 import { PasswordModule } from 'primeng/password';
+import { matchingFieldsValidator, isValidField, getFieldError, MyEmailValidator, MyFullNameValidator } from '../../../guards/my_validators';
+import { CommonModule } from '@angular/common';
+import { MyEmailValidatorsService } from '../../../guards/my_validator.service';
 
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule,  ReactiveFormsModule],
+    imports: [CommonModule,ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule,  ReactiveFormsModule,MessageModule],
     template: `
 
     <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Thanks to join us!!!</div>
@@ -19,28 +23,39 @@ import { PasswordModule } from 'primeng/password';
 
 
 
-<div>
+
 <form autocomplete="off" [formGroup]="UserForm"  (ngSubmit)="registerUser()">
+
     <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-    <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] mb-8"  />
+    <input pInputText id="email1" type="text" formControlName="email" placeholder="Email address" class="w-full md:w-[30rem] "  />
+    <div class="flex items-start  justify-end mt-1">
+    <p-message *ngIf="checkField(UserForm,'email')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'email') }}</p-message>
+    </div>
     <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Name</label>
-    <input pInputText id="email1" type="text"  placeholder="Name" class="w-full md:w-[30rem] mb-8"  />
+    <input pInputText id="name1" type="text"  formControlName="name"  placeholder="Full Name" class="w-full md:w-[30rem] "  />
+    <div class="flex items-start  justify-end mt-1">
+    <p-message *ngIf="checkField(UserForm,'name')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'name') }}</p-message>
+    </div>
     <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
     <p-password  id="password1" formControlName="password"  placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
-    <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Confirm Password</label>
-    <p-password  id="password1" formControlName="cpassword"  placeholder="Confirm Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
-    <div class="flex items-center justify-between mt-2 mb-8 gap-8">
-        <div class="flex items-center">
-            <p-checkbox  id="rememberme1" binary class="mr-2"></p-checkbox>
-            <label for="rememberme1">Remember me</label>
-        </div>
-        <span class="font-medium no-underline ml-14 text-right cursor-pointer text-primary">Forgot password?</span>
-
+    <div class="flex items-start  justify-end mt-1">
+    <p-message *ngIf="checkField(UserForm,'password')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'password') }}</p-message>
+    </div>
+    <label for="password2" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Confirm Password</label>
+    <p-password  id="password2" formControlName="password2"  placeholder="Confirm Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+    <div class="flex items-start  justify-end mt-1">
+    <p-message *ngIf="checkField(UserForm,'password2')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'password2') }}</p-message>
     </div>
 
-    <p-button label="Create Acount" styleClass="w-full" type="submit" [disabled]="UserForm.invalid"></p-button>
+    <p-button label="Create Acount" styleClass="w-full mt-8" type="submit" [disabled]="UserForm.invalid"></p-button>
+
     </form>
-</div>  `
+
+
+
+
+
+`
 })
 
 
@@ -48,18 +63,56 @@ import { PasswordModule } from 'primeng/password';
 export class RegisterPage{
 
 
-private fb          = inject( FormBuilder );
+  private fb          = inject( FormBuilder );
   private authService = inject( AuthService );
-  private router      = inject( Router )
-
+  private router      = inject( Router );
+  private MyAsincValidator=inject(MyEmailValidatorsService)
 
   public UserForm: FormGroup = this.fb.group({
-    email:    ['omargfg@gmail.com', [ Validators.required, Validators.email ]],
-    password: ['222222', [ Validators.required, Validators.minLength(6) ]],
-  });
+    email:    ['', [ Validators.required, MyEmailValidator()],[this.MyAsincValidator]],
+    name:['',[ Validators.required, MyFullNameValidator()] ],
+    password: ['', [ Validators.required, Validators.minLength(6) ]],
+    password2: ['', [ Validators.required,Validators.minLength(6) ]],
+  },
+  {
+    // Aplicamos el validador personalizado""matchingFieldsValidator" al formulario completo para comparar 'password' y 'confirmPassword'
+    validators: [matchingFieldsValidator('password', 'C_password')]
+  }
+);
 
 
-  registerUser(){}
+public checkField(myform:FormGroup, field:string){
+  return  isValidField(myform,field);
+
+}
+
+
+FieldError(myform:FormGroup, field:string){
+
+return getFieldError(myform, field);
+
+}
+
+
+  registerUser() {
+    console.log(this.UserForm.value);
+    const { email,name, password } = this.UserForm.value;
+
+    this.authService.registerUser(email, name,password)
+      .subscribe({
+        next: () => {
+           // this.router.navigateByUrl('main')
+           console.log('registro exitoso');
+        },
+        error: (message) => {
+          console.log(message);
+
+          //Swal.fire('Error', message, 'error' )
+        }
+      })
+
+  }
+
 
 
 }

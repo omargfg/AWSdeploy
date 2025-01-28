@@ -14,6 +14,7 @@ import { Portada } from './app/pages/auth/portada';
 export const appRoutes: Routes = [
 
 
+
     {
         path: 'main',
        // canActivate: [ isAuthenticatedGuard ],
@@ -38,6 +39,5 @@ export const appRoutes: Routes = [
         ],
 
     },
-
     { path: '**', component: Notfound }
 ];
