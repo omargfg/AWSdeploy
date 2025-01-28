@@ -76,7 +76,7 @@ export class RegisterPage{
   },
   {
     // Aplicamos el validador personalizado""matchingFieldsValidator" al formulario completo para comparar 'password' y 'confirmPassword'
-    validators: [matchingFieldsValidator('password', 'C_password')]
+    validators: [matchingFieldsValidator('password', 'password2')]
   }
 );
 
