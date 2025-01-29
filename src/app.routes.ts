@@ -7,8 +7,9 @@ import { Login } from './app/pages/auth/portada/login';
 import { isAuthenticatedGuard } from './app/guards/is-authenticated.guard';
 import { isNotAuthenticatedGuard } from './app/guards/is-not-authenticated.guard';
 import authRoutes from './app/pages/auth/auth.routes';
-import { RegisterPage } from './app/pages/auth/portada/register';
+import { RegisterPage, } from './app/pages/auth/portada/register';
 import { Portada } from './app/pages/auth/portada';
+import { RegisterSuccess } from './app/pages/auth/portada/registerSuccess';
 
 
 export const appRoutes: Routes = [
@@ -35,6 +36,7 @@ export const appRoutes: Routes = [
         children:[
          {path:'login',component: Login},
          {path:'register',component: RegisterPage},
+         {path:'success',component: RegisterSuccess},
          { path: '**', component: Login }
         ],
 

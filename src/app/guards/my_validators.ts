@@ -26,23 +26,31 @@ export const cantBeThisUser= ( control: FormControl, userName: string  ): Valida
 
 
 //funcion para validar q dos campos en un formulario reactivo sean iguales
-export function matchingFieldsValidator(field1: string, field2: string): ValidatorFn {
-    return (formGroup: AbstractControl): ValidationErrors | null => {
-      const control = formGroup.get(field1);
-      const matchingControl = formGroup.get(field2);
 
-      // Verifica si ambos controles existen
-      if (control && matchingControl) {
-        // Si los valores no coinciden, devuelve el error
-        if (matchingControl.value && control.value !== matchingControl.value) {
-          matchingControl.setErrors({ mustMatch: true });
-        } else {
-          matchingControl.setErrors(null); // Limpia cualquier error existente
-        }
-      }
-      return null;
-    };
-  }
+export function matchingFieldsValidator(controlName: string, matchingControlName: string): ValidatorFn {
+  return (formGroup: AbstractControl): ValidationErrors | null => {
+    const control = formGroup.get(controlName);
+    const matchingControl = formGroup.get(matchingControlName);
+
+    if (!control || !matchingControl) {
+      return null; // Si no encontramos los controles, no hacemos nada
+    }
+
+    if (matchingControl.errors && !matchingControl.errors['matchingFields']) {
+      return null; // Si ya hay otros errores, no sobreescribimos
+    }
+
+    // Comparación de valores
+    if (control.value !== matchingControl.value) {
+      matchingControl.setErrors({ matchingFields: true });
+    } else {
+      matchingControl.setErrors(null);
+    }
+
+    return null;
+  };
+}
+
 
 
 //funcion para validar la sintaxis del email q devuelve la key personalizda { 'email': true }
@@ -70,22 +78,6 @@ export function matchingFieldsValidator(field1: string, field2: string): Validat
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   //funcion que devuelve los errores de un campo en caso q no sean null
  export function isValidField( form: FormGroup, field: string ) {
     return form.controls[field].errors && form.controls[field].touched;
@@ -104,15 +96,15 @@ export function matchingFieldsValidator(field1: string, field2: string): Validat
           return 'Please, required field';
         case 'email':
             return 'Please an email format valid is required ';
-        case ' fullname':
-                return 'Please, a full name it`s required'
+        case 'fullname':
+                return 'Please, a full name it`s required';
         case 'minlength':
           return `Mínimo ${ errors['minlength'].requiredLength } caracters.`;
 
-        case 'mustMatch':
-            return `Please make sure you confirmed the password correctly`;
+        case 'matchingFields':
+            return 'Please make sure you confirmed the password correctly';
         case 'emailTaken':
-                return `The email provided is currently in use, please enter another one...`;
+                return 'The email provided is currently in use, please enter another one...';
       }
     }
 

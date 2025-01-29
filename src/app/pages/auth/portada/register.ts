@@ -36,15 +36,17 @@ import { MyEmailValidatorsService } from '../../../guards/my_validator.service';
     <div class="flex items-start  justify-end mt-1">
     <p-message *ngIf="checkField(UserForm,'name')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'name') }}</p-message>
     </div>
+
     <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
     <p-password  id="password1" formControlName="password"  placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
     <div class="flex items-start  justify-end mt-1">
     <p-message *ngIf="checkField(UserForm,'password')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'password') }}</p-message>
     </div>
+
     <label for="password2" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Confirm Password</label>
-    <p-password  id="password2" formControlName="password2"  placeholder="Confirm Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+    <p-password  formControlName="pass2"  placeholder="Confirm Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
     <div class="flex items-start  justify-end mt-1">
-    <p-message *ngIf="checkField(UserForm,'password2')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'password2') }}</p-message>
+    <p-message *ngIf="checkField(UserForm,'pass2')"  severity="error" variant="simple" size="small"> {{ FieldError(UserForm,'pass2') }}</p-message>
     </div>
 
     <p-button label="Create Acount" styleClass="w-full mt-8" type="submit" [disabled]="UserForm.invalid"></p-button>
@@ -67,17 +69,17 @@ export class RegisterPage{
   private authService = inject( AuthService );
   private router      = inject( Router );
   private MyAsincValidator=inject(MyEmailValidatorsService)
-
-  public UserForm: FormGroup = this.fb.group({
-    email:    ['', [ Validators.required, MyEmailValidator()],[this.MyAsincValidator]],
-    name:['',[ Validators.required, MyFullNameValidator()] ],
-    password: ['', [ Validators.required, Validators.minLength(6) ]],
-    password2: ['', [ Validators.required,Validators.minLength(6) ]],
-  },
-  {
-    // Aplicamos el validador personalizado""matchingFieldsValidator" al formulario completo para comparar 'password' y 'confirmPassword'
-    validators: [matchingFieldsValidator('password', 'password2')]
-  }
+  public UserForm: FormGroup = this.fb.group(
+    {
+      email: ['', [Validators.required, MyEmailValidator()], [this.MyAsincValidator]],
+      name: ['', [Validators.required, MyFullNameValidator()]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      pass2: ['', [Validators.required, Validators.minLength(6)]],
+    },
+    {
+      // Validador personalizado para comparar los campos 'password' y 'pass2'
+      validators: [matchingFieldsValidator('password', 'pass2')],
+    }
 );
 
 
@@ -95,21 +97,24 @@ return getFieldError(myform, field);
 
 
   registerUser() {
-    console.log(this.UserForm.value);
-    const { email,name, password } = this.UserForm.value;
 
-    this.authService.registerUser(email, name,password)
-      .subscribe({
-        next: () => {
-           // this.router.navigateByUrl('main')
-           console.log('registro exitoso');
-        },
-        error: (message) => {
-          console.log(message);
 
-          //Swal.fire('Error', message, 'error' )
-        }
-      })
+    this.router.navigateByUrl('success');
+    // console.log(this.UserForm.value);
+    // const { email,name, password } = this.UserForm.value;
+
+    // this.authService.registerUser(email, name,password)
+    //   .subscribe({
+    //     next: () => {
+    //        // this.router.navigateByUrl('main')
+    //        console.log('registro exitoso');
+    //     },
+    //     error: (message) => {
+    //       console.log(message);
+
+    //       //Swal.fire('Error', message, 'error' )
+    //     }
+    //   })
 
   }
 

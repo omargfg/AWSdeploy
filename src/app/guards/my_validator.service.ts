@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { AbstractControl, AsyncValidator, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { AuthService } from '../pages/service/authservice.service';
 
 @Injectable({
@@ -11,14 +11,16 @@ import { AuthService } from '../pages/service/authservice.service';
 export class MyEmailValidatorsService implements AsyncValidator {
 
 constructor(private authservice:AuthService) { }
-    validate(control: AbstractControl): Observable<ValidationErrors | null> {
+
+validate(control: AbstractControl): Observable<ValidationErrors | null> {
         const email = control.value;
 
         return this.authservice.checkByEmail(email).pipe(
 
                               map((isTaken: boolean) => {
                                            return isTaken ? { emailTaken: true } : null;
-                                  })
+                                  }),
+                              catchError( err => throwError( () => console.log(err.error.message) ) )
                                );
 
     }
