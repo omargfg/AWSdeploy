@@ -11,6 +11,7 @@ import { PasswordModule } from 'primeng/password';
 import { matchingFieldsValidator, isValidField, getFieldError, MyEmailValidator, MyFullNameValidator } from '../../../guards/my_validators';
 import { CommonModule } from '@angular/common';
 import { MyEmailValidatorsService } from '../../../guards/my_validator.service';
+import { AuthStatus } from '../../../interfaces/auth-status.interface';
 
 @Component({
     selector: 'app-register',
@@ -69,6 +70,11 @@ export class RegisterPage{
   private authService = inject( AuthService );
   private router      = inject( Router );
   private MyAsincValidator=inject(MyEmailValidatorsService)
+
+  constructor(){
+    //this.authService.set_authStatus=AuthStatus.unRegistered;
+}
+
   public UserForm: FormGroup = this.fb.group(
     {
       email: ['', [Validators.required, MyEmailValidator()], [this.MyAsincValidator]],

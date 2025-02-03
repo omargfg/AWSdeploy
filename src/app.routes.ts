@@ -18,28 +18,30 @@ export const appRoutes: Routes = [
 
     {
         path: 'main',
-       // canActivate: [ isAuthenticatedGuard ],
+       canActivate: [ isAuthenticatedGuard ],
+        // canMatch:[ isAuthenticatedGuard ],
         component:AppLayout,
         children: [
             { path: '', component: Dashboard },
-            { path: 'Dashboard', component: Dashboard },
+            { path: 'db', component: Dashboard },
             { path: 'uikit', loadChildren: () => import('./app/pages/uikit/uikit.routes') },
             { path: 'documentation', component: Documentation },
             { path: 'notfound', component: Notfound },
-
+            { path: '**', component: Notfound }
         ]
     },
+    {
+        path: '',
+            canActivate: [ isNotAuthenticatedGuard ],
+            component: Portada,
+            children:[
+            {path:'login',component: Login},
+            {path:'register',component: RegisterPage},
+            {path:'success',component: RegisterSuccess},
+            { path: '**', component: Login }
+            ],
 
-  {  path: '',
-        //canActivate: [ isNotAuthenticatedGuard ],
-        component: Portada,
-        children:[
-         {path:'login',component: Login},
-         {path:'register',component: RegisterPage},
-         {path:'success',component: RegisterSuccess},
-         { path: '**', component: Login }
-        ],
+        },
 
-    },
     { path: '**', component: Notfound }
 ];

@@ -33,30 +33,31 @@ export class AppComponent {
     });
 
 
-    // public authStatusChangedEffect = effect(() => {
-
-    //   switch( this.authService.authStatus() ) {
-
-    //     case AuthStatus.checking:
-    //       break;
-
-    //     case AuthStatus.authenticated:
-    //       this.router.navigateByUrl('main');
-    //       break;
-
-    //     case AuthStatus.notAuthenticated:
-    //       this.router.navigateByUrl('');
-    //       break;
-
-    //     case AuthStatus.unRegistered:
-    //         this.router.navigateByUrl('register');
-    //         break;
-    //   }
+public authStatusChangedEffect = effect(() => {
 
 
+//     if(this.authService.authStatus()===AuthStatus.authenticated)
+//         this.router.navigateByUrl('main');
+    switch( this.authService.authStatus() ) {
+
+      case AuthStatus.checking:
+         break;
+
+        case AuthStatus.authenticated:
+          this.router.navigateByUrl('main');
+         break;
+
+       case AuthStatus.notAuthenticated:
+         this.router.navigateByUrl('');
+         break;
+
+       case AuthStatus.unRegistered:
+           this.router.navigateByUrl('register');
+           break;
+     }
 
 
-    // });
+   });
 
 
 }
