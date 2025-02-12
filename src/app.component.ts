@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from './app/pages/service/authservice.service';
 import { AuthStatus } from './app/interfaces/index.interface';
 import { CommonModule } from '@angular/common';
+import { appRoutes } from './app.routes';
 
 @Component({
     selector: 'app-root',

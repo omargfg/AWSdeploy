@@ -14,8 +14,6 @@ import { RegisterSuccess } from './app/pages/auth/portada/registerSuccess';
 
 export const appRoutes: Routes = [
 
-
-
     {
         path: 'main',
        canActivate: [ isAuthenticatedGuard ],
